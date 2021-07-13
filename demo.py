@@ -1,5 +1,5 @@
 
-print(hell0)
+print('hell0')
 # from operator import getitem
 from torchvision.transforms import Compose
 import torch
