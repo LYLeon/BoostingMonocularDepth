@@ -1,11 +1,13 @@
-from operator import getitem
+
+#%%
+# from operator import getitem
 from torchvision.transforms import Compose
 import torch
 import cv2
 import numpy as np
 import warnings
 warnings.simplefilter('ignore', np.RankWarning)
-import gradio as gr
+# import gradio as gr
 import os
 import gdown
 # OUR
@@ -13,9 +15,10 @@ from utils import ImageandPatchs, generatemask, getGF_fromintegral, calculatepro
     applyGridpatch
 
 # MIDAS
-import midas.utils
-from midas.models.midas_net import MidasNet
-from midas.models.transforms import Resize, NormalizeImage, PrepareForNet
+import MiDaS.utils
+from MiDaS.midas.midas_net import MidasNet
+from MiDaS.midas.transforms import Resize, NormalizeImage, PrepareForNet
+from MiDaS.midas.dpt_depth import DPTDepthModel
 
 # PIX2PIX : MERGE NET
 from pix2pix.options.test_options import TestOptions
@@ -23,18 +26,20 @@ from pix2pix.models.pix2pix4depth_model import Pix2Pix4DepthModel
 #
 ## Download model wieghts
 # Mergenet model
-os.system("mkdir -p ./pix2pix/checkpoints/mergemodel/")
-url = "https://drive.google.com/u/0/uc?id=1cU2y-kMbt0Sf00Ns4CN2oO9qPJ8BensP&export=download"
-output = "./pix2pix/checkpoints/mergemodel/"
-gdown.download(url, output, quiet=False)
+# os.system("mkdir -p ./pix2pix/checkpoints/mergemodel/")
+# url = "https://drive.google.com/u/0/uc?id=1cU2y-kMbt0Sf00Ns4CN2oO9qPJ8BensP&export=download"
+# output = "./pix2pix/checkpoints/mergemodel/"
+# gdown.download(url, output, quiet=False)
 
-url = "https://drive.google.com/uc?id=1nqW_Hwj86kslfsXR7EnXpEWdO2csz1cC"
-output = "./midas/"
-gdown.download(url, output, quiet=False)
+# # url = "https://drive.google.com/uc?id=1nqW_Hwj86kslfsXR7EnXpEWdO2csz1cC"
+# url = "https://github.com/intel-isl/DPT/releases/download/1_0/dpt_large-midas-2f21e586.pt"
+# output = "./"
+# gdown.download(url, output, quiet=False)
 
 #
 # select device
-device = torch.device("cpu")
+torch.cuda.empty_cache()
+device = torch.device("cuda")
 print("device: %s" % device)
 
 print("nvidia:", torch.cuda.device_count())
@@ -53,9 +58,13 @@ pix2pixmodel.netG.to(device)
 pix2pixmodel.device = device
 pix2pixmodel.eval()
 
-midas_model_path = "midas/model.pt"
+midas_model_path = "dpt_large-midas-2f21e586.pt"
 global midasmodel
-midasmodel = MidasNet(midas_model_path, non_negative=True)
+midasmodel = DPTDepthModel(
+            path=midas_model_path,
+            backbone="vitl16_384",
+            non_negative=True,
+        )
 midasmodel.to(device)
 midasmodel.eval()
 
@@ -74,10 +83,10 @@ def estimatemidas(img, msize):
                 resize_target=None,
                 keep_aspect_ratio=True,
                 ensure_multiple_of=32,
-                resize_method="upper_bound",
+                resize_method="minimal",
                 image_interpolation_method=cv2.INTER_CUBIC,
             ),
-            NormalizeImage(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            NormalizeImage(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
             PrepareForNet(),
         ]
     )
@@ -361,13 +370,23 @@ title = "Boosting Monocular Depth Estimation Models to High-Resolution via Conte
 description = "To use this demo, simply upload your image and click submit. Note that it might take a few minutes for the results to be generated."
 article = "<p style='text-align: center'><a href='http://yaksoy.github.io/highresdepth/'> Project page</a> | <a href='https://github.com/compphoto/BoostingMonocularDepth'>Github Repo</a></p>"
 
-gr.Interface(
-    generatedepth,
-    [gr.inputs.Image(type="numpy", label="Input")],
-    [gr.outputs.Image(type="numpy", label="Output"), gr.outputs.Textbox(label=":")],
-    title=title,
-    description=description,
-    article=article,
-    examples=[["inputs/sample1.png"],
-              ["inputs/sample2.jpg"]]
-    ).launch(debug=True,share=True)
+# gr.Interface(
+#     generatedepth,
+#     [gr.inputs.Image(type="numpy", label="Input")],
+#     [gr.outputs.Image(type="numpy", label="Output"), gr.outputs.Textbox(label=":")],
+#     title=title,
+#     description=description,
+#     article=article,
+#     examples=[["inputs/sample1.png"],
+#               ["inputs/sample2.jpg"]]
+#     ).launch(debug=True,share=True)
+
+from PIL import Image
+import glob
+import numpy as np
+
+
+for file in glob.iglob('inputs/*'):
+    print(file)
+    generatedepth(np.asarray(Image.open(file).convert('RGB')))
+# %%
