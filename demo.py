@@ -15,10 +15,10 @@ from utils import ImageandPatchs, generatemask, getGF_fromintegral, calculatepro
     applyGridpatch
 
 # MIDAS
-import MiDaS.utils
-from MiDaS.midas.midas_net import MidasNet
-from MiDaS.midas.transforms import Resize, NormalizeImage, PrepareForNet
-from MiDaS.midas.dpt_depth import DPTDepthModel
+import midas.utils
+from midas.midas.midas_net import MidasNet
+from midas.midas.transforms import Resize, NormalizeImage, PrepareForNet
+from midas.midas.dpt_depth import DPTDepthModel
 
 # PIX2PIX : MERGE NET
 from pix2pix.options.test_options import TestOptions
