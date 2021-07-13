@@ -1,6 +1,6 @@
 
 print('hell0')
-# from operator import getitem
+from operator import getitem
 from torchvision.transforms import Compose
 import torch
 import cv2
@@ -46,7 +46,7 @@ print("device: %s" % device)
 
 print("nvidia:", torch.cuda.device_count())
 
-whole_size_threshold = 3000  # R_max from the paper
+whole_size_threshold = 2000  # R_max from the paper
 GPU_threshold = 1600 - 32 # Limit for the GPU (NVIDIA RTX 2080), can be adjusted
 scale_threshold = 3  # Allows up-scaling with a scale up to 3
 
