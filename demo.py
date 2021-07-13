@@ -1,5 +1,5 @@
 
-#%%
+print(hell0)
 # from operator import getitem
 from torchvision.transforms import Compose
 import torch
@@ -13,6 +13,7 @@ import gdown
 # OUR
 from utils import ImageandPatchs, generatemask, getGF_fromintegral, calculateprocessingres, rgb2gray,\
     applyGridpatch
+print('hell1')
 
 # MIDAS
 import midas.utils
@@ -26,6 +27,7 @@ from pix2pix.models.pix2pix4depth_model import Pix2Pix4DepthModel
 #
 ## Download model wieghts
 # Mergenet model
+print('downloading merge model')
 os.system("mkdir -p ./pix2pix/checkpoints/mergemodel/")
 url = "https://drive.google.com/u/0/uc?id=1cU2y-kMbt0Sf00Ns4CN2oO9qPJ8BensP&export=download"
 output = "./pix2pix/checkpoints/mergemodel/"
