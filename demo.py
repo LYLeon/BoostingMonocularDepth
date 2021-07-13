@@ -27,16 +27,16 @@ from pix2pix.models.pix2pix4depth_model import Pix2Pix4DepthModel
 #
 ## Download model wieghts
 # Mergenet model
-print('downloading merge model')
-os.system("mkdir -p ./pix2pix/checkpoints/mergemodel/")
-url = "https://drive.google.com/u/0/uc?id=1cU2y-kMbt0Sf00Ns4CN2oO9qPJ8BensP&export=download"
-output = "./pix2pix/checkpoints/mergemodel/"
-gdown.download(url, output, quiet=False)
+# print('downloading merge model')
+# os.system("mkdir -p ./pix2pix/checkpoints/mergemodel/")
+# url = "https://drive.google.com/u/0/uc?id=1cU2y-kMbt0Sf00Ns4CN2oO9qPJ8BensP&export=download"
+# output = "./pix2pix/checkpoints/mergemodel/"
+# gdown.download(url, output, quiet=False)
 
-# # url = "https://drive.google.com/uc?id=1nqW_Hwj86kslfsXR7EnXpEWdO2csz1cC"
-url = "https://github.com/intel-isl/DPT/releases/download/1_0/dpt_large-midas-2f21e586.pt"
-output = "./"
-gdown.download(url, output, quiet=False)
+# # # url = "https://drive.google.com/uc?id=1nqW_Hwj86kslfsXR7EnXpEWdO2csz1cC"
+# url = "https://github.com/intel-isl/DPT/releases/download/1_0/dpt_large-midas-2f21e586.pt"
+# output = "./"
+# gdown.download(url, output, quiet=False)
 
 #
 # select device
@@ -71,7 +71,7 @@ midasmodel.to(device)
 midasmodel.eval()
 
 
-mask_org = generatemask((3000, 3000))
+mask_org = generatemask((2000, 2000))
 
 
 def estimatemidas(img, msize):
